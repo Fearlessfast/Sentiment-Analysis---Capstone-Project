@@ -1,0 +1,97 @@
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import twitter4j.TwitterException;
+
+public class SentimentClassifierOutputs2 extends JFrame
+{
+
+JTextArea console2;
+JScrollPane consolesc2;
+
+
+SentimentClassifierOutputs2()
+{
+setSize(1360,880);//Setting frame size
+setTitle("Outputs for Sentiment Analysis");//Writing frame title
+
+setLocation(100,100);//Adopting text area
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+setLayout(new GridBagLayout());
+
+console2 = new javax.swing.JTextArea();
+
+
+console2.setColumns(120);//Setting size of console
+console2.setRows(50);
+console2.setEditable(false);
+
+console2.setText("SENTIMENT CLASSIFIER OUTPUTS");//Writing text in first line on console 
+
+consolesc2 = new javax.swing.JScrollPane(console2);//Setting bar horizontal and vertical in order to adopt console in Jtext Area
+
+add(consolesc2);//Create console in ScrollPane
+
+
+System.setOut(new PrintStream(new JTextAreaOutputStream(console2)));
+System.setErr(new PrintStream(new JTextAreaOutputStream(console2)));
+
+
+new Thread(new Runnable()//Initializing new Thread for writeLog()
+{
+public void run() 
+{ try 
+{
+writeLog();//Define writeLog() function to be console screen
+} 
+catch (Exception ie) 
+{ }
+}
+}).start();
+}
+
+
+public class JTextAreaOutputStream extends OutputStream//To make JTextArea to console screen
+{
+JTextArea te2;
+
+public JTextAreaOutputStream(JTextArea area) 
+{
+super();
+te2 = area;
+}
+
+public void write(int i) //Convert Characters to Strings
+{
+te2.append(Character.toString((char)i));
+}
+
+public void write(char[] buf, int off, int len) //Reads len characters into a specified array, started from offset off.
+{
+String s = new String(buf, off, len);//The data to be written,the start offset in the data,the number of bytes that are written in String
+te2.append(s);
+}
+}
+
+
+
+public void writeLog() throws FileNotFoundException ,IOException, TwitterException //Sentiment Classifier2 Code are implements and redirect to JTextArea to be outputs
+{
+	  System.out.println("");
+	  SentimentClassifier2 sen2 = new SentimentClassifier2();
+	  sen2.TwitterSearch();
+	 
+}
+
+public static void main(String[] args) //JFrame opens with JTextArea on screen
+{
+JFrame jf = new SentimentClassifierOutputs();
+jf.setVisible(true); 
+jf.setResizable(false);
+  
+
+  }
+}
+
+

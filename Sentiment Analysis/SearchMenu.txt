@@ -1,0 +1,95 @@
+//Main class to start program.
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+	
+	
+public class SearchMenu extends JFrame implements ActionListener{
+		
+public static class ImagePanel extends JPanel{
+Image ob =new ImageIcon("SentimentAnalysis.png").getImage();//Arranging of background theme
+public void paintComponent(Graphics g){
+g.drawImage(ob,0,0,getWidth(),getHeight(),this);
+		   }
+	}
+	
+JLabel title1;
+JLabel title2;
+JButton enter1;
+JButton enter2;
+	 
+public SearchMenu(){
+		  
+super("Search for Sentiment Analysis");//Writing panel title
+		  
+setSize(600,350);//Setting panel size
+setVisible(true);
+setDefaultCloseOperation(EXIT_ON_CLOSE);		  
+JPanel ImagePanel = new ImagePanel();
+ImagePanel.setLayout(null);
+	      
+title1 = new JLabel("SENTIMENT ANALYSIS");//Arranging label type and write on screen
+title1.setForeground(Color.BLACK);
+title1.setFont(new Font("SansSerif",Font.BOLD,30));
+	      
+title2 = new JLabel("Click Button To Search");//Arranging label type and write on screen
+title2.setForeground(Color.BLACK);
+	      
+	      
+	  
+enter1 = new JButton("Text Search");//Naming button and add on screen
+enter2 = new JButton("Twitter Search");	      
+	      
+enter1.addActionListener(this);//Making button active for mouse click
+enter2.addActionListener(this);	  
+	      
+title1.setBounds(120, 30, 400, 30);//Setting locations(x,y) and sizing area(x,y) 
+title2.setBounds(218, 90, 200, 30);
+enter1.setBounds(170, 140, 220, 40);
+enter2.setBounds(170, 190, 220, 40);
+	    
+	      
+	  
+			
+ImagePanel.add(title1);//Adding tools to Imagepanel
+ImagePanel.add(title2);
+ImagePanel.add(enter1);
+ImagePanel.add(enter2);
+	      
+add(ImagePanel);//Creating ImagePanel
+	  }
+
+	
+public void actionPerformed(ActionEvent e) {//Arranging button actions
+if(e.getSource()== enter1){//Button triggers SentimentClassifierOutputs panel
+dispose();
+SentimentClassifierOutputs se= new SentimentClassifierOutputs();
+se.setVisible(true);
+se.setResizable(false);
+			}
+else if(e.getSource()== enter2){//button triggers SearchWord panel
+	dispose();
+	SearchWord sea = new SearchWord();
+	sea.setVisible(true);
+	sea.setResizable(false);	
+    }   
+}
+			
+public static void main(String args[]) throws Exception{
+SearchMenu ser = new SearchMenu();
+ser.setVisible(true);
+ser.setResizable(false);
+	      
+		    }
+		
+	  }
+

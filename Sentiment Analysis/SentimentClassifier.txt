@@ -1,0 +1,284 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.io.FileReader;
+import java.io.BufferedReader;
+
+public  class SentimentClassifier 
+{
+static String line = null;
+static String positiveLine = null;
+static String negativeLine = null;	
+public static ArrayList<String> negative = new ArrayList<String>();
+public static ArrayList<String> positive = new ArrayList<String>();
+	
+public static void Splitting() throws IOException
+{
+BufferedReader positiveWords = new BufferedReader(new FileReader("positive.txt"));
+BufferedReader negativeWords = new BufferedReader(new FileReader("negative.txt"));
+		
+while((positiveLine = positiveWords.readLine()) != null)
+{
+positive.add(positiveLine);
+}
+while((negativeLine = negativeWords.readLine()) != null)
+{
+negative.add(negativeLine);
+}
+		
+positiveWords.close();
+negativeWords.close();
+}
+	
+	public static void Classifier() throws FileNotFoundException , IOException
+	{
+		int counterPositive = 0;
+		int counterNegative = 0;
+		int counterNeutral = 0;
+		BufferedReader reader = new BufferedReader(new FileReader("imdb.txt"));
+		while ((line = reader.readLine()) != null)
+		{
+			int counterPos = 0;
+			int counterNeg = 0;
+			
+			for(String keyword: positive)
+			{
+				if(line.toLowerCase().contains(keyword))
+				{
+					int position = line.toLowerCase().indexOf(keyword);
+					int wordLength = keyword.length();
+					int lineLength = line.length();
+					if(position-1>-1 && position+wordLength<lineLength)
+					{
+						if(line.charAt(position-1) == ' ' || 
+								line.charAt(position-1) == ',' ||
+								line.charAt(position-1) == '.' ||
+								line.charAt(position-1) == '?' ||
+								line.charAt(position-1) == '!' ||
+								line.charAt(position-1) == '\'' ||
+								line.charAt(position-1) == '"' ||
+								line.charAt(position-1) == ';' ||
+								line.charAt(position-1) == '+')
+						{
+							if(line.charAt(position+wordLength) == ' ' || 
+									line.charAt(position+wordLength) == ',' ||
+									line.charAt(position+wordLength) == '.' ||
+									line.charAt(position+wordLength) == '?' ||
+									line.charAt(position+wordLength) == '!' ||
+									line.charAt(position+wordLength) == '\'' ||
+									line.charAt(position+wordLength) == '"' ||
+									line.charAt(position+wordLength) == ';' ||
+									line.charAt(position+wordLength) == '+')
+								if(position>=4)
+								{
+									if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+									{
+										counterNeg++;
+									}
+									else
+									{
+										counterPos++;
+									}
+								}
+								else
+								{
+									counterPos++;
+								}
+						}
+					}
+					else if(position+wordLength<lineLength)
+					{
+						if(line.charAt(position+wordLength) == ' ' || 
+								line.charAt(position+wordLength) == ',' ||
+								line.charAt(position+wordLength) == '.' ||
+								line.charAt(position+wordLength) == '?' ||
+								line.charAt(position+wordLength) == '!' ||
+								line.charAt(position+wordLength) == '\'' ||
+								line.charAt(position+wordLength) == '"' ||
+								line.charAt(position+wordLength) == ';' ||
+								line.charAt(position+wordLength) == '+')
+						{
+							if(position>=4)
+							{
+								if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+								{
+									counterNeg++;
+								}
+								else
+								{
+									counterPos++;
+								}
+							}
+							else
+							{
+								counterPos++;
+							}
+						}
+					}
+					else if(position-1>-1)
+					{
+						if(line.charAt(position-1) == ' ' || 
+								line.charAt(position-1) == ',' ||
+								line.charAt(position-1) == '.' ||
+								line.charAt(position-1) == '?' ||
+								line.charAt(position-1) == '!' ||
+								line.charAt(position-1) == '\'' ||
+								line.charAt(position-1) == '"' ||
+								line.charAt(position-1) == ';' ||
+								line.charAt(position-1) == '+')
+						{
+							if(position>=4)
+							{
+								if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+								{
+									counterNeg++;
+								}
+								else
+								{
+									counterPos++;
+								}
+							}
+							else
+							{
+								counterPos++;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			for(String keyword: negative)
+			{
+				if(line.toLowerCase().contains(keyword))
+				{
+					int position = line.toLowerCase().indexOf(keyword);
+					int wordLength = keyword.length();
+					int lineLength = line.length();
+					if(position-1>-1 && position+wordLength<lineLength)
+					{
+						if(line.charAt(position-1) == ' ' || 
+								line.charAt(position-1) == ',' ||
+								line.charAt(position-1) == '.' ||
+								line.charAt(position-1) == '?' ||
+								line.charAt(position-1) == '!' ||
+								line.charAt(position-1) == '\'' ||
+								line.charAt(position-1) == '"' ||
+								line.charAt(position-1) == ';' ||
+								line.charAt(position-1) == '+')
+						{
+							if(line.charAt(position+wordLength) == ' ' || 
+									line.charAt(position+wordLength) == ',' ||
+									line.charAt(position+wordLength) == '.' ||
+									line.charAt(position+wordLength) == '?' ||
+									line.charAt(position+wordLength) == '!' ||
+									line.charAt(position+wordLength) == '\'' ||
+									line.charAt(position+wordLength) == '"' ||
+									line.charAt(position+wordLength) == ';' ||
+									line.charAt(position+wordLength) == '+')
+								if(position>=4)
+								{
+									if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+									{
+										counterPos++;
+									}
+									else
+									{
+										counterNeg++;
+									}
+								}
+								else
+								{
+									counterNeg++;
+								}
+						}
+					}
+					else if(position+wordLength<lineLength)
+					{
+						if(line.charAt(position+wordLength) == ' ' || 
+								line.charAt(position+wordLength) == ',' ||
+								line.charAt(position+wordLength) == '.' ||
+								line.charAt(position+wordLength) == '?' ||
+								line.charAt(position+wordLength) == '!' ||
+								line.charAt(position+wordLength) == '\'' ||
+								line.charAt(position+wordLength) == '"' ||
+								line.charAt(position+wordLength) == ';' ||
+								line.charAt(position+wordLength) == '+')
+						{
+							if(position>=4)
+							{
+								if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+								{
+									counterPos++;
+								}
+								else
+								{
+									counterNeg++;
+								}
+							}
+							else
+							{
+								counterNeg++;
+							}
+						}
+					}
+					else if(position-1>-1)
+					{
+						if(line.charAt(position-1) == ' ' || 
+								line.charAt(position-1) == ',' ||
+								line.charAt(position-1) == '.' ||
+								line.charAt(position-1) == '?' ||
+								line.charAt(position-1) == '!' ||
+								line.charAt(position-1) == '\'' ||
+								line.charAt(position-1) == '"' ||
+								line.charAt(position-1) == ';' ||
+								line.charAt(position-1) == '+')
+						{
+							if(position>=4)
+							{
+								if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+								{
+									counterPos++;
+								}
+								else
+								{
+									counterNeg++;
+								}
+							}
+							else
+							{
+								counterNeg++;
+							}
+						}
+					}
+				}
+			}
+		
+			if(counterPos==counterNeg)
+			{
+				System.out.println(line + " " + "-- Our Result N");
+				counterNeutral++;
+			}
+			else if(counterPos>counterNeg)
+			{
+				System.out.println(line + " " + "-- Our Result 1");
+				counterPositive++;
+			}
+			else
+			{
+				System.out.println(line + " " + "-- Our Result 0");
+				counterNegative++;
+			}
+		}
+		reader.close();
+		System.out.println("Number of positive tweets : " + counterPositive);
+		System.out.println("Number of negative tweets : " + counterNegative);
+		System.out.println("Number of neutral tweets : " + counterNeutral);
+	}
+
+	public static void main(String[] args) throws FileNotFoundException , IOException
+	{
+		Splitting();
+		Classifier();
+	}
+}

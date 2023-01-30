@@ -1,0 +1,109 @@
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+
+public class SearchWord extends JFrame implements ActionListener{
+	public static ArrayList<String> search = new ArrayList<String>();//Keeps word when word are written in text field
+    String keyword;
+	public static class ImagePanel2 extends JPanel{
+		Image ob =new ImageIcon("SentimentAnalysis.png").getImage();//Arranging of background theme
+	public void paintComponent(Graphics g){
+		g.drawImage(ob,0,0,getWidth(),getHeight(),this);
+	     }
+	}
+	
+    
+	JLabel title3;
+	JLabel title4;
+    JTextField word;
+	JButton enter3;
+	JButton enter4;
+  
+	public SearchWord(){
+	  
+	  super("Choosing The Word for Sentiment Analysis");//Writing panel title
+	  
+	  setSize(600,350);//Setting panel size
+	  setVisible(true);
+      setDefaultCloseOperation(EXIT_ON_CLOSE);		  
+      JPanel ImagePanel2 = new ImagePanel2();
+      
+      
+      ImagePanel2.setLayout(null);
+      
+      title3 = new JLabel("SENTIMENT ANALYSIS FOR TWITTER");//Arranging label type and write on screen
+      title3.setForeground(Color.BLACK);
+      title3.setFont(new Font("SansSerif",Font.BOLD,20));
+      
+      title4 = new JLabel("Search for Word:");//Arranging label type and write on screen
+      title4.setForeground(Color.BLACK);
+      
+      
+      word = new JTextField();
+      
+      enter3 = new JButton("Search");//Naming button and add on screen
+      enter4 = new JButton("Clear");
+      
+      enter3.addActionListener(this);//Making button active for mouse click
+      enter4.addActionListener(this);
+      
+      title3.setBounds(100, 30, 400, 30);//Setting locations(x,y) and sizing area(x,y)
+      title4.setBounds(110, 100, 200, 30);
+      word.setBounds(220, 100, 200, 30);
+      enter3.setBounds(170, 155, 110, 40);
+      enter4.setBounds(300, 155, 110, 40);
+     
+      
+  
+		
+      ImagePanel2.add(title3);//Adding tools to Imagepanel2
+      ImagePanel2.add(title4);
+      ImagePanel2.add(word);
+      ImagePanel2.add(enter3);
+      ImagePanel2.add(enter4);
+     
+  
+      
+      add(ImagePanel2);//Creating Imagepanel2
+  }
+
+
+public void actionPerformed(ActionEvent e) {//Arranging button actions
+ if(e.getSource()== enter3){//Button triggers SentimentClassifierOutputs2 panel
+	keyword = word.getText();//Getting word from text field
+	search.add(0, keyword);
+	dispose();
+	SentimentClassifierOutputs2 sen2 = new SentimentClassifierOutputs2();
+    sen2.setVisible(true);
+    sen2.setResizable(false);
+	
+ }
+ 
+ else if(e.getSource()== enter4){
+		word.setText("");
+			
+		      }
+	
+	      }
+ 
+
+
+public static void main(String args[]) throws Exception{
+	  SearchWord sea = new SearchWord();
+      sea.setVisible(true);
+      sea.setResizable(false);
+      
+    }
+}
+

@@ -1,0 +1,308 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Status;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
+
+public class SentimentClassifier2
+{
+	static String line = null;
+	static String positiveLine = null;
+	static String negativeLine = null;
+	
+	public static ArrayList<String> negative = new ArrayList<String>();
+	public static ArrayList<String> positive = new ArrayList<String>();
+	
+	public static void Splitting() throws IOException
+	{
+		BufferedReader positiveWords = new BufferedReader(new FileReader("positive.txt"));
+		BufferedReader negativeWords = new BufferedReader(new FileReader("negative.txt"));
+		
+		while((positiveLine = positiveWords.readLine()) != null)
+		{
+			positive.add(positiveLine);
+		}
+		while((negativeLine = negativeWords.readLine()) != null)
+		{
+			negative.add(negativeLine);
+		}
+		
+		positiveWords.close();
+		negativeWords.close();
+	}
+	
+
+	public static void Twitter() throws TwitterException
+	{
+		ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+		configurationBuilder.setDebugEnabled(true)
+		.setOAuthConsumerKey("WlZnMC6rsP1ATJ8Ceq3ygQfmY")
+		.setOAuthConsumerSecret("zVA9BAeZAcKwdUKMobqK25CUzyN6vIVc4ZvDuQOB1QCbzS0Eod")
+		.setOAuthAccessToken("859461816258318337-866ZJHPRMVnhnzOUrsjef4mzCcyQJCv")
+		.setOAuthAccessTokenSecret("VFZzzXryCQA0g9oaUytTUvY5fj2aA5q3CkfQRWtM8NMMJ");
+		
+		TwitterFactory tf = new TwitterFactory(configurationBuilder.build());
+		twitter4j.Twitter twitter = tf.getInstance();
+		
+    	int counterPositive = 0;
+		int counterNegative = 0;
+		int counterNeutral = 0;
+		
+		Query query = new Query(SearchWord.search.get(0));
+	    QueryResult result = twitter.search(query);
+	    
+	    
+	    for (Status status : result.getTweets()) 
+	    {
+			int counterPos = 0;
+			int counterNeg = 0;
+			
+			for(String keyword: positive)
+			{
+				if(status.getText().toLowerCase().contains(keyword))
+				{
+					int position = status.getText().toLowerCase().indexOf(keyword);
+					int wordLength = keyword.length();
+					int lineLength = status.getText().length();
+					if(position-1>-1 && position+wordLength<lineLength)
+					{
+						if(status.getText().charAt(position-1) == ' ' || 
+						status.getText().charAt(position-1) == ',' ||
+						status.getText().charAt(position-1) == '.' ||
+						status.getText().charAt(position-1) == '?' ||
+						status.getText().charAt(position-1) == '!' ||
+						status.getText().charAt(position-1) == '\'' ||
+						status.getText().charAt(position-1) == '"' ||
+						status.getText().charAt(position-1) == ';' ||
+						status.getText().charAt(position-1) == '+')
+						{
+							if(status.getText().charAt(position+wordLength) == ' ' || 
+									status.getText().charAt(position+wordLength) == ',' ||
+									status.getText().charAt(position+wordLength) == '.' ||
+									status.getText().charAt(position+wordLength) == '?' ||
+									status.getText().charAt(position+wordLength) == '!' ||
+									status.getText().charAt(position+wordLength) == '\'' ||
+									status.getText().charAt(position+wordLength) == '"' ||
+									status.getText().charAt(position+wordLength) == ';' ||
+									status.getText().charAt(position+wordLength) == '+')
+								if(position>=4)
+								{
+									if(status.getText().charAt(position-4) == 'n' && status.getText().charAt(position-2)=='t' ) 
+									{
+										counterNeg++;
+									}
+									else
+									{
+										counterPos++;
+									}
+								}
+								else
+								{
+									counterPos++;
+								}
+						}
+					}
+					else if(position+wordLength<lineLength)
+					{
+						if(line.charAt(position+wordLength) == ' ' || 
+								line.charAt(position+wordLength) == ',' ||
+								line.charAt(position+wordLength) == '.' ||
+								line.charAt(position+wordLength) == '?' ||
+								line.charAt(position+wordLength) == '!' ||
+								line.charAt(position+wordLength) == '\'' ||
+								line.charAt(position+wordLength) == '"' ||
+								line.charAt(position+wordLength) == ';' ||
+								line.charAt(position+wordLength) == '+')
+						{
+							if(position>=4)
+							{
+								if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+								{
+									counterNeg++;
+								}
+								else
+								{
+									counterPos++;
+								}
+							}
+							else
+							{
+								counterPos++;
+							}
+						}
+					}
+					else if(position-1>-1)
+					{
+						if(status.getText().charAt(position-1) == ' ' || 
+							status.getText().charAt(position-1) == ',' ||
+							status.getText().charAt(position-1) == '.' ||
+							status.getText().charAt(position-1) == '?' ||
+							status.getText().charAt(position-1) == '!' ||
+							status.getText().charAt(position-1) == '\'' ||
+							status.getText().charAt(position-1) == '"' ||
+							status.getText().charAt(position-1) == ';' ||
+							status.getText().charAt(position-1) == '+')
+						{
+							if(position>=4)
+							{
+								if(status.getText().charAt(position-4) == 'n' && status.getText().charAt(position-2)=='t' ) 
+								{
+									counterNeg++;
+								}
+								else
+								{
+									counterPos++;
+								}
+							}
+							else
+							{
+								counterPos++;
+							}
+						}
+					}
+				}
+			}
+			
+			for(String keyword: negative)
+			{
+				if(status.getText().toLowerCase().contains(keyword))
+				{
+					int position = status.getText().toLowerCase().indexOf(keyword);
+					int wordLength = keyword.length();
+					int lineLength = status.getText().length();
+					if(position-1>-1 && position+wordLength<lineLength)
+					{
+						if(status.getText().charAt(position-1) == ' ' || 
+						status.getText().charAt(position-1) == ',' ||
+						status.getText().charAt(position-1) == '.' ||
+						status.getText().charAt(position-1) == '?' ||
+						status.getText().charAt(position-1) == '!' ||
+						status.getText().charAt(position-1) == '\'' ||
+						status.getText().charAt(position-1) == '"' ||
+						status.getText().charAt(position-1) == ';' ||
+						status.getText().charAt(position-1) == '+')
+						{
+							if(status.getText().charAt(position+wordLength) == ' ' || 
+									status.getText().charAt(position+wordLength) == ',' ||
+									status.getText().charAt(position+wordLength) == '.' ||
+									status.getText().charAt(position+wordLength) == '?' ||
+									status.getText().charAt(position+wordLength) == '!' ||
+									status.getText().charAt(position+wordLength) == '\'' ||
+									status.getText().charAt(position+wordLength) == '"' ||
+									status.getText().charAt(position+wordLength) == ';' ||
+									status.getText().charAt(position+wordLength) == '+')
+								if(position>=4)
+								{
+									if(status.getText().charAt(position-4) == 'n' && status.getText().charAt(position-2)=='t' ) 
+									{
+										counterPos++;
+									}
+									else
+									{
+										counterNeg++;
+									}
+								}
+								else
+								{
+									counterNeg++;
+								}
+						}
+					}
+					else if(position+wordLength<lineLength)
+					{
+						if(line.charAt(position+wordLength) == ' ' || 
+								line.charAt(position+wordLength) == ',' ||
+								line.charAt(position+wordLength) == '.' ||
+								line.charAt(position+wordLength) == '?' ||
+								line.charAt(position+wordLength) == '!' ||
+								line.charAt(position+wordLength) == '\'' ||
+								line.charAt(position+wordLength) == '"' ||
+								line.charAt(position+wordLength) == ';' ||
+								line.charAt(position+wordLength) == '+')
+						{
+							if(position>=4)
+							{
+								if(line.charAt(position-4) == 'n' && line.charAt(position-2)=='t' ) 
+								{
+									counterPos++;
+								}
+								else
+								{
+									counterNeg++;
+								}
+							}
+							else
+							{
+								counterNeg++;
+							}
+						}
+					}
+					else if(position-1>-1)
+					{
+						if(status.getText().charAt(position-1) == ' ' || 
+							status.getText().charAt(position-1) == ',' ||
+							status.getText().charAt(position-1) == '.' ||
+							status.getText().charAt(position-1) == '?' ||
+							status.getText().charAt(position-1) == '!' ||
+							status.getText().charAt(position-1) == '\'' ||
+							status.getText().charAt(position-1) == '"' ||
+							status.getText().charAt(position-1) == ';' ||
+							status.getText().charAt(position-1) == '+')
+						{
+							if(position>=4)
+							{
+								if(status.getText().charAt(position-4) == 'n' && status.getText().charAt(position-2)=='t' ) 
+								{
+									counterPos++;
+								}
+								else
+								{
+									counterNeg++;
+								}
+							}
+							else
+							{
+								counterNeg++;
+							}
+						}
+					}
+				}
+			}
+			
+			if(counterPos==counterNeg)
+			{
+				System.out.println(status.getText() + " " + "-- Our Result N");
+				counterNeutral++;
+			}
+			else if(counterPos>counterNeg)
+			{
+				System.out.println(status.getText() + " " + "-- Our Result 1");
+				counterPositive++;
+			}
+			else
+			{
+				System.out.println(status.getText() + " " + "-- Our Result 0");
+				counterNegative++;
+			}
+	    }
+	    
+	    System.out.println("Number of positive tweets : " + counterPositive);
+		System.out.println("Number of negative tweets : " + counterNegative);
+		System.out.println("Number of neutral tweets : " + counterNeutral);
+	}
+	
+	public static void TwitterSearch() throws IOException,TwitterException
+	{
+		SentimentClassifier2.Splitting();
+		SentimentClassifier2.Twitter();
+	}
+}
+	
+	
